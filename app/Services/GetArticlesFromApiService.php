@@ -15,9 +15,9 @@ class GetArticlesFromApiService
         //themes Bitcoin, Litecoin, Ripple, Dash, Ethereum
 
         return Http::withHeaders([
-            'X-Api-Key:' => '21676f01bbf342c3a12593de23877a43',
+            'X-Api-Key' => '21676f01bbf342c3a12593de23877a43',
         ])->get('https://newsapi.org/v2/everything', [
-            'q' => 'bitcoin AND litecoin AND ripple AND dash AND ethereum',
+            'q' => 'bitcoin OR litecoin OR ripple OR dash OR ethereum',
         ]);
 
     }
