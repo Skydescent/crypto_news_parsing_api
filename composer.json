@@ -8,6 +8,7 @@
         "php": "^8.0",
         "asavenkov/sail-lumen": "^0.1.2",
         "guzzlehttp/guzzle": "^7.4",
+        "illuminate/redis": "^9.5",
         "laravel/lumen-framework": "^9.0"
     },
     "require-dev": {

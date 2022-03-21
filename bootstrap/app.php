@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Redis\RedisServiceProvider;
 use Laravel\Tinker\TinkerServiceProvider;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -62,6 +63,11 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('tinker');
+$app->configure('news_api');
+$app->configure('queue');
+$app->configure('database');
+$app->configure('articles');
 
 /*
 |--------------------------------------------------------------------------
@@ -93,7 +99,11 @@ $app->configure('app');
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\RepositoryServiceProvider::class);
+$app->register(RedisServiceProvider::class);
+$app->register(ASavenkov\SailLumen\SailLumenServiceProvider::class);
+$app->register(TinkerServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
@@ -113,11 +123,5 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
-
-$app->register(ASavenkov\SailLumen\SailLumenServiceProvider::class);
-
-$app->configure('tinker');
-
-$app->register(TinkerServiceProvider::class);
 
 return $app;

@@ -15,14 +15,21 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('author');
+            $table->string('theme');
+            $table->string('author')->nullable();
             $table->string('title');
             $table->text('description');
             $table->string('url');
             $table->string('image_url');
-            $table->time('published_at');
+            $table->timestamp('published_at');
             $table->text('content');
             $table->timestamps();
+            $table->unsignedBigInteger('source_id');
+
+            $table->foreign('source_id')
+                ->references('id')
+                ->on('article_sources')
+                ->onUpdate('restrict');
         });
     }
 

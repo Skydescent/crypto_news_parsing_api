@@ -2,23 +2,67 @@
 
 namespace App\Services;
 
+use App\Contracts\Services\GetArticlesFromApiServiceContract;
+use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 
-class GetArticlesFromApiService
+class GetArticlesFromApiService implements GetArticlesFromApiServiceContract
 {
-    public function get(): PromiseInterface|Response
+    /**
+     * @param string $theme
+     * @param Carbon|null $fromTo
+     * @param int $countArticlesPerQuery
+     * @return PromiseInterface|Response
+     * @throws RequestException
+     */
+    public function get(
+        string $theme,
+        ?Carbon $fromTo = null,
+        int $countArticlesPerQuery = 1
+    ): PromiseInterface|Response
     {
-        //API 21676f01bbf342c3a12593de23877a43
+        ['key' => $key, 'base_url' => $base_url] = $this->setUpConfigs();
 
-        //themes Bitcoin, Litecoin, Ripple, Dash, Ethereum
+        $fromTo = $fromTo ?? Carbon::now();
 
         return Http::withHeaders([
-            'X-Api-Key' => '21676f01bbf342c3a12593de23877a43',
-        ])->get('https://newsapi.org/v2/everything', [
-            'q' => 'bitcoin OR litecoin OR ripple OR dash OR ethereum',
-        ]);
+                'X-Api-Key' => $key,
+            ])
+            ->get($base_url, [
+                'q' => $theme,
+                'pageSize' => $countArticlesPerQuery,
+                'language' => config('news_api.result_lang'),
+                'to' => $this->convertDateToApiStandard($fromTo)
+            ])
+            ->throw();
+    }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
+    protected function setUpConfigs(): array
+    {
+        if (is_null(config('news_api.base_url')) || is_null(config('news_api.key'))) {
+            throw new Exception('News api configs not set');
+        }
+
+        return [
+            'key' => config('news_api.key'),
+            'base_url' => config('news_api.base_url')
+        ];
+    }
+
+    /**
+     * @param Carbon $date
+     * @return string
+     */
+    protected function convertDateToApiStandard(Carbon $date): string
+    {
+        return $date->toIso8601String();
     }
 }
