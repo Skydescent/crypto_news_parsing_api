@@ -2,14 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Contracts\Repositories\ArticleRepositoryContract;
 use App\Contracts\Services\ArticleServiceContract;
-use App\Contracts\Services\GetArticlesFromApiServiceContract;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use App\DTO\Response\Article as ArticleResponseDTO;
 use Illuminate\Validation\ValidationException;
 
 class AddNewArticleJob extends Job

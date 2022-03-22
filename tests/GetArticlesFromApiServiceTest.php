@@ -60,8 +60,6 @@ class GetArticlesFromApiServiceTest extends TestCase
 
         $this->assertNotEmpty($randomArticle['publishedAt']);
 
-        Log::info(print_r($randDate->toString() . '___' . Carbon::parse($randomArticle['publishedAt'])->toString()));
-
         $this->assertTrue( $randDate->gte(Carbon::parse($randomArticle['publishedAt'])));
     }
 

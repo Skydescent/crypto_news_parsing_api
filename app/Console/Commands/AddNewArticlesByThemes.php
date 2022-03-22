@@ -33,15 +33,21 @@ class AddNewArticlesByThemes extends Command
 
         if (count($themes) == 0) return;
 
-        foreach ($themes as $key => $theme) {
-            $job = (new AddNewArticleJob($theme))->delay($key * 60);
-            Queue::push($job);
+        foreach ($themes as $theme) {
+
+            Queue::push(new AddNewArticleJob($theme));
         }
-        Artisan::call('queue:work');
+
+        Artisan::call('queue:work --stop-when-empty');
     }
 
     protected function getThemesFromConfig()
     {
         return config('articles.themes');
+    }
+
+    protected function getDelayForJob(): int
+    {
+        return (int) config('articles.delay_per_article');
     }
 }

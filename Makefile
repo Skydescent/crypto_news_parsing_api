@@ -24,6 +24,3 @@ sail-up:
 
 sail-down:
 	./vendor/bin/sail down --remove-orphans
-
-clear-log:
-	echo '' > storage/logs/laravel.log

@@ -2,7 +2,6 @@
 
 namespace App\DTO\Response;
 
-
 use App\Contracts\DTO\Response\ArticleContract;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -55,7 +54,7 @@ class Article implements ArticleContract
      */
     public static function create(array $responseArticle, string $theme): self
     {
-        $validated = self::validate($responseArticle);
+        $validated =  Validator::make($responseArticle, self::VALIDATION_RULES)->validate();
 
         return new self(
             $validated['source']['name'],
@@ -87,20 +86,5 @@ class Article implements ArticleContract
             'publishedAt' => $this->publishedAt,
             'content' => $this->content
         ];
-    }
-
-    /**
-     * Validate response data
-     *
-     * @param array $responseArticle
-     * @return array
-     *
-     * @throws ValidationException
-     */
-    protected static function validate(array $responseArticle): array
-    {
-        $validator = Validator::make($responseArticle, self::VALIDATION_RULES);
-
-        return $validator->validate();
     }
 }

@@ -20,16 +20,13 @@ class ArticleService implements ArticleServiceContract
 
     /**
      * @param string $theme
-     * @return bool
      * @throws RequestException
      * @throws ValidationException
      */
-    public function addArticleByTheme(string $theme): bool
+    public function addArticleByTheme(string $theme)
     {
-        $oldest = $this->articleRepository->getOldestArticleByTheme($theme);
-        $dateTo = $oldest ? Carbon::parse($oldest->published_at) : Carbon::now();
 
-        $result = $this->articleApiService->get($theme, $dateTo);
+        $result = $this->articleApiService->get($theme, Carbon::now());
 
         if (empty($result->json('articles'))) {
             throw new \Exception("There is not new articles by the theme: $theme");
@@ -41,7 +38,5 @@ class ArticleService implements ArticleServiceContract
         if (!$this->articleRepository->createFromDto($articleDto)) {
             throw new \Exception('Problems with saving in database');
         }
-
-        return true;
     }
 }

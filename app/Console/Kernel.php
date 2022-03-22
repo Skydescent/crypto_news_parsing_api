@@ -25,10 +25,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $delay = count(config('articles.themes'));
+        //$this->addArticleSchedule($schedule);
+    }
+
+    protected function addArticleSchedule(Schedule $schedule)
+    {
+        $delay = (int) config('articles.delay_per_article');
 
         if ($delay > 0) {
-            $schedule->command(AddNewArticlesByThemes::class)->cron("*/$delay * * * *");
+            $schedule->command(AddNewArticlesByThemes::class)
+                ->withoutOverlapping()
+                ->cron("*/$delay * * * *");
         }
     }
 }
