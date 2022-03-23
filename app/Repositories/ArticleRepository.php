@@ -10,6 +10,7 @@ use App\Models\ArticleSource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ArticleRepository implements ArticleRepositoryContract
 {
@@ -96,17 +97,20 @@ class ArticleRepository implements ArticleRepositoryContract
      */
     protected function groupQuery(Builder $query, array $groupFilters)
     {
-        $whereConditions = array_map(
-            function ($filterName) use ($groupFilters) {
-                if($filterName === 'source') {
-                    return ['article_sources.name', $groupFilters[$filterName]];
-                }
-                return [$filterName, $groupFilters[$filterName]];
-            },
-            array_keys($groupFilters)
-        );
+        foreach ($groupFilters as $filterName => $filter) {
+            if($filterName === 'source') {
+                $query->where('article_sources.name', $filter);
+                continue;
+            }
 
-        $query->where($whereConditions);
+            if($filterName === 'published_at') {
+                $date = Carbon::parse($filter)->format('Y-m-d');
+                $query->whereDate('published_at', '=', $date);
+                continue;
+            }
+
+            $query->where($filterName, $filter);
+        }
     }
 
     /**

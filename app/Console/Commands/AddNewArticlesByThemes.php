@@ -38,7 +38,7 @@ class AddNewArticlesByThemes extends Command
             Queue::push(new AddNewArticleJob($theme));
         }
 
-        Artisan::call('queue:work --stop-when-empty');
+        Artisan::call('queue:work --stop-when-empty --daemon');
     }
 
     protected function getThemesFromConfig()
