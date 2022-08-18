@@ -19,7 +19,7 @@
 * В базовый образ [Dockerfile](docker/8.1/Dockerfile) добавлен демон crontab c [расписанием](docker/8.1/scheduler)
 * crontab запускается supervisor в качестве [worker](docker/8.1/supervisord.conf) 
 * в [Kernal](app/Console/Kernel.php) реализуется запуск команды [AddNewArticlesByThemes](app/Console/Commands/AddNewArticlesByThemes.php) по расписанию из настроек
-* команда [AddNewArticlesByThemes](app/Console/Commands/AddNewArticlesByThemes.php) берёт из настроке темы для парсинга и в цикле добавляет [AddNewArticleJob](app/Jobs/AddNewArticleJob.php) c темой в очередь
+* команда [AddNewArticlesByThemes](app/Console/Commands/AddNewArticlesByThemes.php) берёт из настроек темы для парсинга и в цикле добавляет [AddNewArticleJob](app/Jobs/AddNewArticleJob.php) c темой в очередь
 * Далее происходи вызов команды обработки очереди `Artisan::call('queue:work --stop-when-empty --daemon')` Драйвером очереди настроен Redis
 * [AddNewArticleJob](app/Jobs/AddNewArticleJob.php) обращается к сервису добавления статей [ArticleService](app/Services/ArticleService.php), который используя сервис [GetArticlesFromApiService](app/Repositories/GetArticlesFromApiService.php) и репозиторий [ArticleRepository](app/Repositories/ArticleRepository.php) получает статьи из внешнего API и сохраняет их в базу данных
 * В случае если в базе данных уже есть статьи с идентичной темой, то данная статья не сохраняется
